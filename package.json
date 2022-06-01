@@ -1,5 +1,6 @@
 {
   "name": "ethereum-boilerplate",
+  "homepage":"https://didreact.vercel.app/",
   "version": "0.1.0",
   "dependencies": {
     "@ant-design/icons": "^4.7.0",
