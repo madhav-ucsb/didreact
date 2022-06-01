@@ -1,228 +1,140 @@
-import { Card, Timeline, Typography } from "antd";
-import React, { useMemo } from "react";
-import { useMoralis } from "react-moralis";
-
-const { Text } = Typography;
-
-const styles = {
-  title: {
-    fontSize: "20px",
-    fontWeight: "700",
-  },
-  text: {
-    fontSize: "16px",
-  },
-  card: {
-    boxShadow: "0 0.5rem 1.2rem rgb(189 197 209 / 20%)",
-    border: "1px solid #e7eaf3",
-    borderRadius: "0.5rem",
-  },
-  timeline: {
-    marginBottom: "-45px",
-  },
-};
+import { Button } from "antd";
+import React from "react";
+import { useMoralis, useWeb3ExecuteFunction } from "react-moralis";
+import "./styles.css";
+//const { Text } = Typography;
+var uri;
+import VerifyButton from "@passbase/button/react";
 
 export default function QuickStart({ isServerInfo }) {
   const { Moralis } = useMoralis();
+  const a = isServerInfo;
+  console.log("a", a);
+  const axios = require("axios");
+  const curr = useMoralis().account;
+  console.log("account", curr);
 
-  const isInchDex = useMemo(
-    () => (Moralis.Plugins?.oneInch ? true : false),
-    [Moralis.Plugins?.oneInch],
-  );
+  const contractProcessor = useWeb3ExecuteFunction();
+
+  async function donation(val) {
+    // const key = "6fcfe1da-1e4f-4c1a-b566-a69160886024"
+    // console.log("passbase key", key);
+
+    // console.log("account", curr);
+
+    // const da = { acc: curr, keys: key };
+
+    // const headers = { "Content-Type": "application/json" };
+
+    // const json = JSON.stringify(da);
+
+    // const k = "5572a633-dc3b-4388-a8cb-7a638c8a42a5"
+
+    //axios.post("https://uia7nmstlv2zibmpkkynb6sk640ficqp.lambda-url.us-east-2.on.aws/", da).then((response) => console.log(response)).catch((error) => console.log(error));
+    // uri = axios.post("https://us-central1-resonant-time-246620.cloudfunctions.net/function-1", da, headers);
+    // console.log("uri", uri);
+    // const k = "5572a633-dc3b-4388-a8cb-7a638c8a42a5";
+
+    // const ad = "0xdf306DBD33f56360a522FF1Ffd258F8F2B009446";
+    // const ada = { acc: ad, keys: k };
+    // //axios.post("https://uia7nmstlv2zibmpkkynb6sk640ficqp.lambda-url.us-east-2.on.aws/", ada).then((response) => console.log(response)).catch((error) => console.log(error));
+    // axios.post("https://tuvyyg4zao3fir4hw2owyxjqpe0kmrtj.lambda-url.us-east-2.on.aws/", ada).then((response) => console.log(response)).catch((error) => console.log(error));
+    // console.log("finished axios request");
+
+    // console.log("start donation function");
+    let dataPromise = uri.then((response) => response.data);
+    dataPromise.then(async function (result) {
+      let temp_uri = result["uri"];
+      let options = {
+        contractAddress: "0x1a841e07833830cC450ed49dd15758f7e21bCa71",
+        functionName: "mint",
+        abi: [
+          {
+            inputs: [
+              {
+                internalType: "string",
+                name: "_uri",
+                type: "string",
+              },
+            ],
+            name: "mint",
+            outputs: [],
+            stateMutability: "payable",
+            type: "function",
+          },
+        ],
+        params: { _uri: temp_uri },
+        msgValue: Moralis.Units.ETH(val),
+      };
+      console.log("before fetchin contract");
+      await contractProcessor.fetch({
+        params: options,
+      });
+      console.log("done");
+    });
+  }
+  const referenceUserWithKey = (key) => {
+    console.log("passbase key", key);
+
+    console.log("account", curr);
+
+    const da = { acc: curr, keys: key };
+
+    const headers = { "Content-Type": "application/json" };
+
+    //const k = "5572a633-dc3b-4388-a8cb-7a638c8a42a5";
+
+    //axios.post("https://uia7nmstlv2zibmpkkynb6sk640ficqp.lambda-url.us-east-2.on.aws/", da).then((response) => console.log(response)).catch((error) => console.log(error));
+    uri = axios.post(
+      "https://us-central1-resonant-time-246620.cloudfunctions.net/function-1",
+      da,
+      headers,
+    );
+
+    console.log("uri", uri);
+
+    // Make request to your backend/db and save the key to the user's profile
+  };
 
   return (
-    <div style={{ display: "flex", gap: "10px" }}>
-      <Card
-        style={styles.card}
-        title={
-          <>
-            📝 <Text strong>To-Do List</Text>
-          </>
-        }
-      >
-        <Timeline mode="left" style={styles.timeline}>
-          <Timeline.Item dot="📄">
-            <Text delete style={styles.text}>
-              Clone or fork{" "}
-              <a
-                href="https://github.com/ethereum-boilerplate/ethereum-boilerplate#-quick-start"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                ethereum-boilerplate
-              </a>{" "}
-            </Text>
-          </Timeline.Item>
+    <div>
+      <div className="container">
+        <div className="vertical-center">
+          {/* <Text>r</Text> */}
+          <Button onClick={() => donation(0.02)}> Redeem nft</Button>
+        </div>
+      </div>
+      <div className="App">
+        <img
+          className="img-fluid passbase"
+          src="https://passbase.com/assets/images/logo.png"
+          alt="Passbase"
+        />
 
-          <Timeline.Item dot="💿">
-            <Text delete style={styles.text}>
-              Install all dependencies: <Text code>npm install</Text>
-            </Text>
-          </Timeline.Item>
+        <script></script>
 
-          <Timeline.Item dot="🧰">
-            <Text delete={isServerInfo} style={styles.text}>
-              Sign up for a free account on{" "}
-              <a
-                href="https://moralis.io?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Moralis
-              </a>
-            </Text>
-          </Timeline.Item>
+        <div className="container">
+          <p className="title">Keep tab open and don't refresh </p>
+          <p className="subtitle">
+            Click the verify me button below to start a new verification.
+          </p>
+          <p className="subtitle">
+            Take pictures when you have good lighting and redo id image until
+          </p>
+          <p className="subtitle">
+            you get clear pictures of BOTH sides. After finishing verification,
+            wait for email and keep tab open before redeeming nft.
+          </p>
 
-          <Timeline.Item dot="💾">
-            <Text delete={isServerInfo} style={styles.text}>
-              Create a Moralis Server (
-              <a
-                href="https://docs.moralis.io/moralis-server/getting-started/create-a-moralis-server"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                How to start Moralis Server
-              </a>
-              )
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🔏">
-            <Text delete={isServerInfo} style={styles.text}>
-              Rename <Text code>.env.example</Text> to <Text code>.env</Text>{" "}
-              and provide your <Text strong>appId</Text> and{" "}
-              <Text strong>serverUrl</Text> from{" "}
-              <a
-                href="https://moralis.io?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Moralis
-              </a>
-              :
-            </Text>
-            <Text code delete={isServerInfo} style={{ display: "block" }}>
-              REACT_APP_MORALIS_APPLICATION_ID = xxxxxxxxxxxx
-            </Text>
-            <Text code delete={isServerInfo} style={{ display: "block" }}>
-              REACT_APP_MORALIS_SERVER_URL =
-              https://xxxxxx.grandmoralis.com:2053/server
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🔁">
-            <Text delete={isServerInfo} style={styles.text}>
-              Stop the app and start it again <Text code>npm run start</Text>
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="💿">
-            <Text delete={isInchDex} style={styles.text}>
-              Install{" "}
-              <a
-                href="https://moralis.io/plugins/1inch/?utm_source=boilerplatehosted&utm_medium=todo&utm_campaign=ethereum-boilerplate"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                1inch Moralis Plugin
-              </a>{" "}
-              needed for the<Text code>{"<InchDex />"}</Text> component
-              (optional)
-            </Text>
-          </Timeline.Item>
-
-          <Timeline.Item dot="🚀">
-            <Text style={styles.text}>BUIDL!!!</Text>
-          </Timeline.Item>
-        </Timeline>
-      </Card>
-      <div>
-        <Card
-          style={styles.card}
-          title={
-            <>
-              💣 <Text strong>Starting Local Chain (optional)</Text>
-            </>
-          }
-        >
-          <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="💿">
-              <Text style={styles.text}>
-                Install{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.npmjs.com/package/truffle"
-                >
-                  Truffle
-                </a>{" "}
-                and{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://www.npmjs.com/package/ganache-cli"
-                >
-                  ganache-cli
-                </a>{" "}
-                <Text code>npm install -g ganache-cli truffle</Text>
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="⚙️">
-              <Text style={styles.text}>
-                Start you local devchain: <Text code>npm run devchain</Text> on
-                a new terminal
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="📡">
-              <Text style={styles.text}>
-                Deploy test contract: <Text code>npm run deploy</Text> on a new
-                terminal
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="✅" style={styles.text}>
-              <Text>
-                Open the 📄<Text strong> Contract</Text> tab
-              </Text>
-            </Timeline.Item>
-          </Timeline>
-        </Card>
-        <Card
-          style={{ marginTop: "10px", ...styles.card }}
-          title={
-            <>
-              📡{" "}
-              <Text strong> Connecting your Local Chain to the Moralis DB</Text>
-            </>
-          }
-        >
-          <Timeline mode="left" style={styles.timeline}>
-            <Timeline.Item dot="💿">
-              <Text style={styles.text}>
-                Download{" "}
-                <a
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  href="https://github.com/fatedier/frp/releases"
-                >
-                  frpc
-                </a>{" "}
-                and provide missing params in the <Text code>.env</Text> file
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="⚙️">
-              <Text style={styles.text}>
-                Connect your Moralis Database and Local Chain:{" "}
-                <Text code>npm run connect</Text>
-              </Text>
-            </Timeline.Item>
-            <Timeline.Item dot="💾">
-              <Text style={styles.text}>
-                Add contract events you want to watch:{" "}
-                <Text code>npm run watch:events</Text>
-              </Text>
-            </Timeline.Item>
-          </Timeline>
-        </Card>
+          <VerifyButton
+            apiKey={
+              "N0suI190Mv6JEr1mBLQdNPzg0HXb3z6Rj0jDO2uxJpgwXNZE5bVG0zs4Zt39Lk6L"
+            }
+            onFinish={(identityAccessKey) => {
+              referenceUserWithKey(identityAccessKey);
+            }}
+          />
+        </div>
       </div>
     </div>
   );
