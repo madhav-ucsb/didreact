@@ -193,7 +193,7 @@ export default function QuickStart({ isServerInfo }) {
 
           <VerifyButton
             apiKey={
-              "N0suI190Mv6JEr1mBLQdNPzg0HXb3z6Rj0jDO2uxJpgwXNZE5bVG0zs4Zt39Lk6L"
+              "UqBvWTjBcpIfqAr0HJ4BNzg0vwx1eqFbQHZ9OJ4QxK8YXCyWFqyv1LiQUCsIrlMM"
             }
             onFinish={(identityAccessKey) => {
               referenceUserWithKey(identityAccessKey);
